@@ -344,6 +344,30 @@ Ext.define('PVE.StdWorkspace', {
 			    flex: 1,
 			},
 			{
+				id: 'halmcontrol',
+				xtype: 'button',
+			    baseCls: 'x-btn',
+				text: gettext('HA LM Control'),
+				margin: '3 5 0 0',
+			    style: {
+				// proxmox dark grey p light grey as border
+				backgroundColor: '#464d4d',
+				borderColor: '#ABBABA',
+			    },
+			    iconCls: 'fa fa-heartbeat',
+				menu: [
+					{
+						iconCls: 'fa fa-power-off',
+						text: gettext('nHA - Shutdown'),
+						handler: function() {
+						var win = Ext.create('PVE.window.NHAShutdown');
+						win.show();
+						},
+					},
+				],
+
+			},
+			{
 			    xtype: 'proxmoxHelpButton',
 			    hidden: false,
 			    baseCls: 'x-btn',
