@@ -33,15 +33,12 @@ Ext.define('PVE.window.NHAShutdown', {
             items: [
                 {
                     xtype: 'combobox',
+                    itemId: 'nodeComboBox',
                     fieldLabel: gettext('Select the node of the machine'),
                     store: {
                         xtype: 'store',
                         fields: ['id', 'name'],
-                        data: [
-                            { id: '1', name: 'pve1' },
-                            { id: '2', name: 'pve2' },
-                            { id: '3', name: 'pve3' },
-                        ],
+                        data: [],
                     },
                     queryMode: 'local',
                     displayField: 'name',
@@ -51,34 +48,28 @@ Ext.define('PVE.window.NHAShutdown', {
                     width: 350,
                     listeners: {
                         select: function(combo, record) {
-                            var secondCombo = combo.up('form').down('#secondComboBox');
-                            if (record.get('id') === '1' || record.get('id') === '2' || record.get('id') === '3') {
-                                secondCombo.show();
-                            } else {
-                                secondCombo.hide();
-                            }
+                            // Define and show the secondary menu when a node is selected
+                            var secondaryMenu = Ext.create('Ext.menu.Menu', {
+                                items: [
+                                    {
+                                        text: 'Option 1',
+                                        handler: function() {
+                                            Ext.Msg.alert('Selected', 'You selected Option 1 for ' + record.get('name'));
+                                        }
+                                    },
+                                    {
+                                        text: 'Option 2',
+                                        handler: function() {
+                                            Ext.Msg.alert('Selected', 'You selected Option 2 for ' + record.get('name'));
+                                        }
+                                    }
+                                ]
+                            });
+
+                            // Show menu near the combobox
+                            secondaryMenu.showBy(combo);
                         }
                     }
-                },
-                {
-                    xtype: 'combobox',
-                    itemId: 'secondComboBox',
-                    fieldLabel: gettext('Select Second Option'),
-                    store: {
-                        xtype: 'store',
-                        fields: ['id', 'name'],
-                        data: [
-                            { id: 'suboption1', name: 'Sub Option 1' },
-                            { id: 'suboption2', name: 'Sub Option 2' },
-                        ],
-                    },
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    editable: false,
-                    triggerAction: 'all',
-                    width: 350,
-                    hidden: true,
                 },
             ]
         }
@@ -88,7 +79,29 @@ Ext.define('PVE.window.NHAShutdown', {
         xclass: 'Ext.app.ViewController',
 
         init: function(view) {
-            var me = this;
+            var params = {};  // Example params if needed
+
+            Proxmox.Utils.API2Request({
+                params: params,
+                url: 'api2/json/nodes',
+                waitMsgTarget: view,
+                method: 'GET',
+                failure: function(response, opts) {
+                    Ext.Msg.alert(gettext('Error'), response.statusText || 'Unknown error');
+                },
+                success: function(response, options) {
+                    var result = response.result.data;
+                    var nodes_array = [];
+                    result.forEach(node => {
+                        nodes_array.push({ id: node.node, name: node.node });
+                    });
+
+                    var combo = Ext.ComponentQuery.query('combobox[itemId=nodeComboBox]')[0];
+                    if (combo) {
+                        combo.getStore().loadData(nodes_array);
+                    }
+                },
+            });
         },
     },
 });
