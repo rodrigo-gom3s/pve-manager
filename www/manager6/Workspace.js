@@ -358,7 +358,7 @@ Ext.define('PVE.StdWorkspace', {
 				menu: [
 					{
 						iconCls: 'fa fa-power-off',
-						text: gettext('nHA - Shutdown'),
+						text: gettext('HA - Shutdown'),
 						handler: function() {
 						var win = Ext.create('PVE.window.NHAShutdown');
 						win.show();

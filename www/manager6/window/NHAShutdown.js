@@ -1,28 +1,11 @@
 Ext.define('PVE.window.NHAShutdown', {
     extend: 'Ext.window.Window',
-
     width: '800px',
-    title: gettext('nHA - Shutdown'),
+    title: gettext('HA - Shutdown'),
     iconCls: 'fa fa-power-off',
     modal: true,
     bodyPadding: 10,
     resizable: false,
-
-    buttons: [
-        {
-            xtype: 'proxmoxHelpButton',
-            onlineHelp: 'gui_my_settings',
-            hidden: true,
-        },
-        '->',
-        {
-            text: gettext('Close'),
-            handler: function() {
-                this.up('window').close();
-            },
-        },
-    ],
-
     layout: 'hbox',
 
     items: [
@@ -32,76 +15,42 @@ Ext.define('PVE.window.NHAShutdown', {
             bodyPadding: 10,
             items: [
                 {
-                    xtype: 'combobox',
-                    itemId: 'nodeComboBox',
-                    fieldLabel: gettext('Select the node of the machine'),
-                    store: {
-                        xtype: 'store',
-                        fields: ['id', 'name'],
-                        data: [],
-                    },
-                    queryMode: 'local',
-                    displayField: 'name',
-                    valueField: 'id',
-                    editable: false,
-                    triggerAction: 'all',
-                    width: 350,
-                    listeners: {
-                        select: function(combo, record) {
-                            // Define and show the secondary menu when a node is selected
-                            var secondaryMenu = Ext.create('Ext.menu.Menu', {
-                                items: [
-                                    {
-                                        text: 'Option 1',
-                                        handler: function() {
-                                            Ext.Msg.alert('Selected', 'You selected Option 1 for ' + record.get('name'));
-                                        }
-                                    },
-                                    {
-                                        text: 'Option 2',
-                                        handler: function() {
-                                            Ext.Msg.alert('Selected', 'You selected Option 2 for ' + record.get('name'));
-                                        }
-                                    }
-                                ]
-                            });
+                    xtype: 'checkbox',
+                    firstStarted: true,
+                    boxLabel: 'Enable Migrate on Shutdown',
+                    itemId: 'migrateCheckbox',
 
-                            // Show menu near the combobox
-                            secondaryMenu.showBy(combo);
+                    listeners: {
+                        change: function(checkbox, newValue) {                           
+                                Ext.Ajax.request({
+                                    url: '/api2/json/cluster/options',
+                                    method: 'PUT',
+                                    jsonData: { ha: "shutdown_policy=" + (checkbox.getValue() ? 'migrate' : 'conditional') },
+                                    failure: function(response) {
+                                        Ext.Msg.alert('Error', 'Failed to update HA setting');
+                                    }
+                                });
                         }
                     }
-                },
+                }
             ]
         }
     ],
 
-    controller: {
-        xclass: 'Ext.app.ViewController',
-
-        init: function(view) {
-            var params = {};  // Example params if needed
-
-            Proxmox.Utils.API2Request({
-                params: params,
-                url: 'api2/json/nodes',
-                waitMsgTarget: view,
+    listeners: {
+        afterrender: function(view) {
+            Ext.Ajax.request({
+                url: '/api2/json/cluster/options',
                 method: 'GET',
-                failure: function(response, opts) {
-                    Ext.Msg.alert(gettext('Error'), response.statusText || 'Unknown error');
+                success: function(response) {
+                    let data = Ext.decode(response.responseText);
+                    let checkbox = view.down('#migrateCheckbox');
+                    checkbox.setValue(data.data.ha !== undefined && data.data.ha.shutdown_policy !== "conditional");
                 },
-                success: function(response, options) {
-                    var result = response.result.data;
-                    var nodes_array = [];
-                    result.forEach(node => {
-                        nodes_array.push({ id: node.node, name: node.node });
-                    });
-
-                    var combo = Ext.ComponentQuery.query('combobox[itemId=nodeComboBox]')[0];
-                    if (combo) {
-                        combo.getStore().loadData(nodes_array);
-                    }
-                },
+                failure: function() {
+                    Ext.Msg.alert('Error', 'Failed to load HA settings');
+                }
             });
-        },
-    },
+        }
+    }
 });
