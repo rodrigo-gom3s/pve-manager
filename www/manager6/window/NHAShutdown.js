@@ -45,7 +45,7 @@ Ext.define('PVE.window.NHAShutdown', {
                 success: function(response) {
                     let data = Ext.decode(response.responseText);
                     let checkbox = view.down('#migrateCheckbox');
-                    checkbox.setValue(data.data.ha !== undefined && data.data.ha.shutdown_policy !== "conditional");
+                    checkbox.setValue(data.data.ha.shutdown_policy === "migrate");
                 },
                 failure: function() {
                     Ext.Msg.alert('Error', 'Failed to load HA settings');
