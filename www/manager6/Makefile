@@ -137,6 +137,7 @@ JSSRC= 							\
 	window/GuestStop.js				\
 	window/TreeSettingsEdit.js			\
 	window/NHAShutdown.js			\
+	window/NHAFaultTolerance.js			\
 	window/PCIMapEdit.js				\
 	window/USBMapEdit.js				\
 	window/GuestImport.js				\

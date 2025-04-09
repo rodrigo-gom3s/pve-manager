@@ -364,6 +364,14 @@ Ext.define('PVE.StdWorkspace', {
 						win.show();
 						},
 					},
+					{
+						iconCls: 'fa fa-refresh',
+						text: gettext('HA - Fault Tolerance'),
+						handler: function() {
+						var win = Ext.create('PVE.window.NHAFaultTolerance');
+						win.show();
+						},
+					},
 				],
 
 			},
