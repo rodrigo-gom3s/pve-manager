@@ -165,7 +165,7 @@ Ext.define('PVE.window.NHAExternalMigration', {
                     },
                     failure: function (response) {
                         console.log(response);
-                        Ext.Msg.alert('Error', response.htmlStatus || 'External migration failed');
+                        Ext.Msg.alert('Error', 'External migration failed<br>Please check if the VM does not belong to a HA group<br>and if it does not have any snapshots');
                     }
                 })
                 }
