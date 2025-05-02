@@ -8,7 +8,6 @@ Ext.define('PVE.window.NHAFaultTolerance', {
     bodyPadding: 10,
     resizable: true,
     layout: 'fit',
-    deamonsocket: '127.0.0.1',
 
     items: [
         {
@@ -126,7 +125,7 @@ Ext.define('PVE.window.NHAFaultTolerance', {
   
                                     },
                                     failure: function(response3) {
-                                        Ext.Msg.alert('Error', 'Failed to enable fault tolerance: ' + response.htmlStatus);
+                                        Ext.Msg.alert('Error', 'API call failed');
                                     }
                                 });
                             },

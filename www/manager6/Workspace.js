@@ -372,6 +372,14 @@ Ext.define('PVE.StdWorkspace', {
 						win.show();
 						},
 					},
+					{
+						iconCls: 'fa fa-exchange',
+						text: gettext('Remote Migration'),
+						handler: function() {
+						var win = Ext.create('PVE.window.NHAExternalMigration');
+						win.show();
+						},
+					}
 				],
 
 			},
