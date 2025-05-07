@@ -139,26 +139,16 @@ Ext.define('PVE.window.NHAExternalMigration', {
             }
         },
         {
-            xtype: 'form',
-            border: false,
-            bodyPadding: 5,
-            width: 300,
-            items: [
-                {
-                    xtype: 'filefield',
-                    name: 'file',
-                    buttonOnly: true,
-                    buttonConfig: {
             text: 'Import Migration Config',
             iconCls: 'fa fa-arrow-down',
-                        ui: 'default-toolbar',
-                        cls: 'x-menu-item'
-                    },
-                    buttonText: 'Import Migration Config',
-                    iconCls: 'fa fa-arrow-down',
-                    listeners: {
-                        change: function (field, value) {
-                            const file = field.fileInputEl.dom.files[0];
+            cls: 'x-menu-item',
+            handler: function () {
+                let fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.json';
+                fileInput.style.display = 'none';
+                fileInput.addEventListener('change', function () {
+                    const file = fileInput.files[0];
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = function (e) {
@@ -173,13 +163,11 @@ Ext.define('PVE.window.NHAExternalMigration', {
                                     },
                                     jsonData: token,
                                     success: function (response) {
-                                                let win = field.up('window')
+                                        let win = Ext.ComponentQuery.query('window[title="Remote Migration"]')[0];
                                         let config = JSON.parse(response.responseText);
-                                                console.log(config);
                                         let endpoint = config['target-endpoint'];
                                         win.down('[name=host]').setValue(endpoint.split('host=')[1].split(',')[0]);
                                         win.down('[name=username]').setValue(endpoint.split('!')[0].split('=')[2]);
-                                                console.log(endpoint.split('!')[1])
                                         win.down('[name=tokenID]').setValue(endpoint.split('!')[1].split('=')[0]);
                                         win.down('[name=secret]').setValue(endpoint.split('=')[3].split(',')[0]);
                                         win.down('[name=storage]').setValue(config['target-storage']);
@@ -193,22 +181,21 @@ Ext.define('PVE.window.NHAExternalMigration', {
                                             icon: Ext.MessageBox.INFO
                                         });
                                     },
-                                            failure: function (response) {
-                                                console.log(response);
+                                    failure: function () {
                                         Ext.Msg.alert('Error', 'Error importing migration configuration');
-                                            }});
-                                        
+                                    }
+                                });
                             } catch (err) {
                                 Ext.Msg.alert('Error', 'Migration config file is not valid JSON');
                             }
                         };
                         reader.readAsText(file);
                     }
-                        }
-                    }
+                });
+                fileInput.click();
             }
-            ]
         }
+        
     ]    
         },
         {
@@ -216,6 +203,8 @@ Ext.define('PVE.window.NHAExternalMigration', {
             iconCls: 'fa fa-play',
             formBind: true,
             handler: function (btn) {
+
+                function processResult(){
                     const win = btn.up('window');
                     const node = win.down('#nodeSelect').getValue();
                     const vmid = win.down('#vmSelect').getValue();
@@ -252,13 +241,23 @@ Ext.define('PVE.window.NHAExternalMigration', {
                              });
                             win.close();
                         },
-                    failure: function (response) {
-                        console.log(response);
+                        failure: function () {
                             Ext.Msg.alert('Error', 'Remote migration failed<br><br>Please check if the VM does not belong to a HA group<br>and if it does not have any snapshots');
                         }
                     })
                     }
                 }
+
+                Ext.Msg.show({
+                    title:'Do you want to proceed?',
+                    msg: 'If you proceed, the VM will be migrated to the selected node and removed from this one.<br><br>Do you want to proceed?',
+                    buttons: Ext.Msg.YESNOCANCEL,
+                    fn: processResult,
+                    animEl: 'elId',
+                    icon: Ext.MessageBox.QUESTION
+                 });
+
+            }
         }
     ]
 });

@@ -170,7 +170,7 @@ Ext.define('PVE.window.NHAConfigJSON', {
                          let file = new Blob([response.responseText], { type: 'application/json' });
                          const link = document.createElement('a');
                          link.href = URL.createObjectURL(file);
-                         link.download = "migration_config.json";
+                         link.download = "migration_config_" + host +"_" + node + ".json";
                          document.body.appendChild(link);
                          link.click();
                          document.body.removeChild(link);
