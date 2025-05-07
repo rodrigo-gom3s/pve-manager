@@ -149,8 +149,8 @@ Ext.define('PVE.window.NHAExternalMigration', {
                     name: 'file',
                     buttonOnly: true,
                     buttonConfig: {
-                        text: 'Import Migration Config',
-                        iconCls: 'fa fa-arrow-down',
+            text: 'Import Migration Config',
+            iconCls: 'fa fa-arrow-down',
                         ui: 'default-toolbar',
                         cls: 'x-menu-item'
                     },
@@ -159,54 +159,54 @@ Ext.define('PVE.window.NHAExternalMigration', {
                     listeners: {
                         change: function (field, value) {
                             const file = field.fileInputEl.dom.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = function (e) {
-                                    const content = e.target.result;
-                                    try {
-                                        const token = JSON.parse(content);
-                                        Ext.Ajax.request({
-                                            url: 'https://pveha.duckdns.org:5000/rest/remotemigration/gettoken',
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            jsonData: token,
-                                            success: function (response) {
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const content = e.target.result;
+                            try {
+                                const token = JSON.parse(content);
+                                Ext.Ajax.request({
+                                    url: 'https://pveha.duckdns.org:5000/rest/remotemigration/gettoken',
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    jsonData: token,
+                                    success: function (response) {
                                                 let win = field.up('window')
-                                                let config = JSON.parse(response.responseText);
+                                        let config = JSON.parse(response.responseText);
                                                 console.log(config);
-                                                let endpoint = config['target-endpoint'];
-                                                win.down('[name=host]').setValue(endpoint.split('host=')[1].split(',')[0]);
-                                                win.down('[name=username]').setValue(endpoint.split('!')[0].split('=')[2]);
+                                        let endpoint = config['target-endpoint'];
+                                        win.down('[name=host]').setValue(endpoint.split('host=')[1].split(',')[0]);
+                                        win.down('[name=username]').setValue(endpoint.split('!')[0].split('=')[2]);
                                                 console.log(endpoint.split('!')[1])
-                                                win.down('[name=tokenID]').setValue(endpoint.split('!')[1].split('=')[0]);
-                                                win.down('[name=secret]').setValue(endpoint.split('=')[3].split(',')[0]);
-                                                win.down('[name=storage]').setValue(config['target-storage']);
-                                                win.down('[name=bridge]').setValue(config['target-bridge']);
-                                                win.down('[name=fingerprint]').setValue(endpoint.split('fingerprint=')[1]);
-                                                Ext.Msg.show({
-                                                    title:'Remote Migration',
-                                                    msg: 'Remote migration configuration has been imported sucessfully',
-                                                    buttons: Ext.Msg.OK,
-                                                    animEl: 'elId',
-                                                    icon: Ext.MessageBox.INFO
-                                                 });
-                                            },
+                                        win.down('[name=tokenID]').setValue(endpoint.split('!')[1].split('=')[0]);
+                                        win.down('[name=secret]').setValue(endpoint.split('=')[3].split(',')[0]);
+                                        win.down('[name=storage]').setValue(config['target-storage']);
+                                        win.down('[name=bridge]').setValue(config['target-bridge']);
+                                        win.down('[name=fingerprint]').setValue(endpoint.split('fingerprint=')[1]);
+                                        Ext.Msg.show({
+                                            title:'Remote Migration',
+                                            msg: 'Remote migration configuration has been imported sucessfully',
+                                            buttons: Ext.Msg.OK,
+                                            animEl: 'elId',
+                                            icon: Ext.MessageBox.INFO
+                                        });
+                                    },
                                             failure: function (response) {
                                                 console.log(response);
-                                                Ext.Msg.alert('Error', 'Error importing migration configuration');
+                                        Ext.Msg.alert('Error', 'Error importing migration configuration');
                                             }});
                                         
-                                    } catch (err) {
-                                        Ext.Msg.alert('Error', 'Migration config file is not valid JSON');
-                                    }
-                                };
-                                reader.readAsText(file);
+                            } catch (err) {
+                                Ext.Msg.alert('Error', 'Migration config file is not valid JSON');
                             }
+                        };
+                        reader.readAsText(file);
+                    }
                         }
                     }
-                }                
+            }
             ]
         }
     ]    
@@ -216,49 +216,49 @@ Ext.define('PVE.window.NHAExternalMigration', {
             iconCls: 'fa fa-play',
             formBind: true,
             handler: function (btn) {
-                const win = btn.up('window');
-                const node = win.down('#nodeSelect').getValue();
-                const vmid = win.down('#vmSelect').getValue();
-                const host = win.down('[name=host]').getValue();
-                const user = win.down('[name=username]').getValue();
-                const tokenID = win.down('[name=tokenID]').getValue();
-                const secret = win.down('[name=secret]').getValue();
-                const storage = win.down('[name=storage]').getValue();
-                const bridge = win.down('[name=bridge]').getValue();
-                const fingerprint = win.down('[name=fingerprint]').getValue();
-                if (!node || !vmid || !host || !user || !tokenID || !secret || !storage || !bridge || !fingerprint) {
-                    Ext.Msg.alert('Error', 'All fields are required.');
-                }else{    
-                    Ext.Ajax.request({
-                    url: 'https://pveha.duckdns.org:5000/rest/remotemigration',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    jsonData: {
-                        "node": node,
-                        "vmID": vmid,
-                        "target_endpoint": "apitoken=PVEAPIToken="+user+"!"+tokenID+"="+secret+",host="+host+",fingerprint="+fingerprint,
-                        "target_storage": storage,
-                        "target_bridge": bridge,
-                    },
-                    success: function () {
-                        Ext.Msg.show({
-                            title:'Remote Migration',
-                            msg: 'Remote migration has been started for selected VM',
-                            buttons: Ext.Msg.OK,
-                            animEl: 'elId',
-                            icon: Ext.MessageBox.INFO
-                         });
-                        win.close();
-                    },
+                    const win = btn.up('window');
+                    const node = win.down('#nodeSelect').getValue();
+                    const vmid = win.down('#vmSelect').getValue();
+                    const host = win.down('[name=host]').getValue();
+                    const user = win.down('[name=username]').getValue();
+                    const tokenID = win.down('[name=tokenID]').getValue();
+                    const secret = win.down('[name=secret]').getValue();
+                    const storage = win.down('[name=storage]').getValue();
+                    const bridge = win.down('[name=bridge]').getValue();
+                    const fingerprint = win.down('[name=fingerprint]').getValue();
+                    if (!node || !vmid || !host || !user || !tokenID || !secret || !storage || !bridge || !fingerprint) {
+                        Ext.Msg.alert('Error', 'All fields are required.');
+                    }else{    
+                        Ext.Ajax.request({
+                        url: 'https://pveha.duckdns.org:5000/rest/remotemigration',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        jsonData: {
+                            "node": node,
+                            "vmID": vmid,
+                            "target_endpoint": "apitoken=PVEAPIToken="+user+"!"+tokenID+"="+secret+",host="+host+",fingerprint="+fingerprint,
+                            "target_storage": storage,
+                            "target_bridge": bridge,
+                        },
+                        success: function () {
+                            Ext.Msg.show({
+                                title:'Remote Migration',
+                                msg: 'Remote migration has been started for selected VM',
+                                buttons: Ext.Msg.OK,
+                                animEl: 'elId',
+                                icon: Ext.MessageBox.INFO
+                             });
+                            win.close();
+                        },
                     failure: function (response) {
                         console.log(response);
-                        Ext.Msg.alert('Error', 'Remote migration failed<br><br>Please check if the VM does not belong to a HA group<br>and if it does not have any snapshots');
+                            Ext.Msg.alert('Error', 'Remote migration failed<br><br>Please check if the VM does not belong to a HA group<br>and if it does not have any snapshots');
+                        }
+                    })
                     }
-                })
                 }
-            }
         }
     ]
 });
