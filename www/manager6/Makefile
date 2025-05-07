@@ -139,6 +139,7 @@ JSSRC= 							\
 	window/NHAShutdown.js			\
 	window/NHAFaultTolerance.js			\
 	window/NHAExternalMigration.js			\
+	window/NHACreateJSON.js			\
 	window/PCIMapEdit.js				\
 	window/USBMapEdit.js				\
 	window/GuestImport.js				\

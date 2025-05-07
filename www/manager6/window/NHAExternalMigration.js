@@ -51,6 +51,9 @@ Ext.define('PVE.window.NHAExternalMigration', {
                                 },
                                 select: function (combo, record) {
                                     const vmCombo = combo.up('window').down('#vmSelect');
+                                    const inputsContainer = combo.up('window').down('#destinationSettings');
+                                    inputsContainer.hide();
+                                    vmCombo.setValue(null);
                                     vmCombo.setDisabled(false);
                                     vmCombo.show();
                                     Proxmox.Utils.API2Request({
@@ -122,6 +125,92 @@ Ext.define('PVE.window.NHAExternalMigration', {
         }
     ],
     buttons: [
+
+        {
+            
+    text: 'Import / Export Migration Configs',
+    iconCls: 'fa fa-file',
+    menu: [
+        {
+            text: 'Create Migration Config',
+            iconCls: 'fa fa-arrow-up',
+            handler: function () {
+                Ext.create('PVE.window.NHAConfigJSON').show();
+            }
+        },
+        {
+            xtype: 'form',
+            border: false,
+            bodyPadding: 5,
+            width: 300,
+            items: [
+                {
+                    xtype: 'filefield',
+                    name: 'file',
+                    buttonOnly: true,
+                    buttonConfig: {
+                        text: 'Import Migration Config',
+                        iconCls: 'fa fa-arrow-down',
+                        ui: 'default-toolbar',
+                        cls: 'x-menu-item'
+                    },
+                    buttonText: 'Import Migration Config',
+                    iconCls: 'fa fa-arrow-down',
+                    listeners: {
+                        change: function (field, value) {
+                            const file = field.fileInputEl.dom.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    const content = e.target.result;
+                                    try {
+                                        const token = JSON.parse(content);
+                                        Ext.Ajax.request({
+                                            url: 'https://pveha.duckdns.org:5000/rest/remotemigration/gettoken',
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            jsonData: token,
+                                            success: function (response) {
+                                                let win = field.up('window')
+                                                let config = JSON.parse(response.responseText);
+                                                console.log(config);
+                                                let endpoint = config['target-endpoint'];
+                                                win.down('[name=host]').setValue(endpoint.split('host=')[1].split(',')[0]);
+                                                win.down('[name=username]').setValue(endpoint.split('!')[0].split('=')[2]);
+                                                console.log(endpoint.split('!')[1])
+                                                win.down('[name=tokenID]').setValue(endpoint.split('!')[1].split('=')[0]);
+                                                win.down('[name=secret]').setValue(endpoint.split('=')[3].split(',')[0]);
+                                                win.down('[name=storage]').setValue(config['target-storage']);
+                                                win.down('[name=bridge]').setValue(config['target-bridge']);
+                                                win.down('[name=fingerprint]').setValue(endpoint.split('fingerprint=')[1]);
+                                                Ext.Msg.show({
+                                                    title:'Remote Migration',
+                                                    msg: 'Remote migration configuration has been imported sucessfully',
+                                                    buttons: Ext.Msg.OK,
+                                                    animEl: 'elId',
+                                                    icon: Ext.MessageBox.INFO
+                                                 });
+                                            },
+                                            failure: function (response) {
+                                                console.log(response);
+                                                Ext.Msg.alert('Error', 'Error importing migration configuration');
+                                            }});
+                                        
+                                    } catch (err) {
+                                        Ext.Msg.alert('Error', 'Migration config file is not valid JSON');
+                                    }
+                                };
+                                reader.readAsText(file);
+                            }
+                        }
+                    }
+                }                
+            ]
+        }
+    ]    
+        },
         {
             text: 'Migrate',
             iconCls: 'fa fa-play',
@@ -155,8 +244,8 @@ Ext.define('PVE.window.NHAExternalMigration', {
                     },
                     success: function () {
                         Ext.Msg.show({
-                            title:'External Migration',
-                            msg: 'External migration has been started for selected VM',
+                            title:'Remote Migration',
+                            msg: 'Remote migration has been started for selected VM',
                             buttons: Ext.Msg.OK,
                             animEl: 'elId',
                             icon: Ext.MessageBox.INFO
@@ -165,7 +254,7 @@ Ext.define('PVE.window.NHAExternalMigration', {
                     },
                     failure: function (response) {
                         console.log(response);
-                        Ext.Msg.alert('Error', 'External migration failed<br><br>Please check if the VM does not belong to a HA group<br>and if it does not have any snapshots');
+                        Ext.Msg.alert('Error', 'Remote migration failed<br><br>Please check if the VM does not belong to a HA group<br>and if it does not have any snapshots');
                     }
                 })
                 }
