@@ -147,7 +147,7 @@ Ext.define('PVE.window.NHAConfigJSON', {
                     Ext.Msg.alert('Error', 'All fields are required.');
                 }else{    
                     Ext.Ajax.request({
-                    url: 'https://pveha.duckdns.org:5000/rest/remotemigration/createtoken',
+                    url: 'https://domain.tld:5000/rest/remotemigration/createtoken',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

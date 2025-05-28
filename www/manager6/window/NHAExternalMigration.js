@@ -156,7 +156,7 @@ Ext.define('PVE.window.NHAExternalMigration', {
                             try {
                                 const token = JSON.parse(content);
                                 Ext.Ajax.request({
-                                    url: 'https://pveha.duckdns.org:5000/rest/remotemigration/gettoken',
+                                    url: 'https://domain.tld:5000/rest/remotemigration/gettoken',
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -219,7 +219,7 @@ Ext.define('PVE.window.NHAExternalMigration', {
                         Ext.Msg.alert('Error', 'All fields are required.');
                     }else{    
                         Ext.Ajax.request({
-                        url: 'https://pveha.duckdns.org:5000/rest/remotemigration',
+                        url: 'https://domain.tld:5000/rest/remotemigration',
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
