@@ -136,6 +136,7 @@ JSSRC= 							\
 	window/GuestDiskReassign.js				\
 	window/GuestStop.js				\
 	window/TreeSettingsEdit.js			\
+	window/NHAPVEAI.js				\
 	window/NHAShutdown.js			\
 	window/NHAFaultTolerance.js			\
 	window/NHAExternalMigration.js			\

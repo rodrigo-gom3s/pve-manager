@@ -379,6 +379,14 @@ Ext.define('PVE.StdWorkspace', {
 						var win = Ext.create('PVE.window.NHAExternalMigration');
 						win.show();
 						},
+					},
+					{
+						iconCls: 'fa fa-question',
+						text: gettext('PVE AI - Proxmox VE AI'),
+						handler: function() {
+						var win = Ext.create('PVE.window.NHAPVEAI');
+						win.show();
+						},
 					}
 				],
 
