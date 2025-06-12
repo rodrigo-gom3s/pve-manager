@@ -347,10 +347,9 @@ Ext.define('PVE.StdWorkspace', {
 				id: 'halmcontrol',
 				xtype: 'button',
 			    baseCls: 'x-btn',
-				text: gettext('HA LM Control'),
+				text: gettext('ProxmoxNG Control'),
 				margin: '3 5 0 0',
 			    style: {
-				// proxmox dark grey p light grey as border
 				backgroundColor: '#464d4d',
 				borderColor: '#ABBABA',
 			    },
@@ -410,7 +409,6 @@ Ext.define('PVE.StdWorkspace', {
 			    xtype: 'button',
 			    baseCls: 'x-btn',
 			    style: {
-				// proxmox dark grey p light grey as border
 				backgroundColor: '#464d4d',
 				borderColor: '#ABBABA',
 			    },
