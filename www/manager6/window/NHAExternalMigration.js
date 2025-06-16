@@ -163,7 +163,7 @@ Ext.define('PVE.window.NHAExternalMigration', {
                                     },
                                     jsonData: token,
                                     success: function (response) {
-                                        let win = Ext.ComponentQuery.query('window[title="Remote Migration"]')[0];
+                                        let win = Ext.ComponentQuery.query('window[title="Remote Migration"]')[Ext.ComponentQuery.query('window[title="Remote Migration"]').length - 2];
                                         let config = JSON.parse(response.responseText);
                                         let endpoint = config['target-endpoint'];
                                         win.down('[name=host]').setValue(endpoint.split('host=')[1].split(',')[0]);
