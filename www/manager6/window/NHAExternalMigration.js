@@ -142,7 +142,7 @@ Ext.define('PVE.window.NHAExternalMigration', {
             text: 'Import Migration Config',
             iconCls: 'fa fa-arrow-down',
             cls: 'x-menu-item',
-            handler: function () {
+            handler: function (button) {
                 let fileInput = document.createElement('input');
                 fileInput.type = 'file';
                 fileInput.accept = '.json';
@@ -156,14 +156,14 @@ Ext.define('PVE.window.NHAExternalMigration', {
                             try {
                                 const token = JSON.parse(content);
                                 Ext.Ajax.request({
-                                    url: 'https://domain.tld:5000/rest/remotemigration/gettoken',
+                                    url: 'https://pve-teste.duckdns.org:5000/rest/remotemigration/gettoken',
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
                                     },
                                     jsonData: token,
                                     success: function (response) {
-                                        let win = Ext.ComponentQuery.query('window[title="Remote Migration"]')[Ext.ComponentQuery.query('window[title="Remote Migration"]').length - 2];
+                                        let win = button.up('window');
                                         let config = JSON.parse(response.responseText);
                                         let endpoint = config['target-endpoint'];
                                         win.down('[name=host]').setValue(endpoint.split('host=')[1].split(',')[0]);
@@ -219,7 +219,7 @@ Ext.define('PVE.window.NHAExternalMigration', {
                         Ext.Msg.alert('Error', 'All fields are required.');
                     }else{    
                         Ext.Ajax.request({
-                        url: 'https://domain.tld:5000/rest/remotemigration',
+                        url: 'https://pve-teste.duckdns.org:5000/rest/remotemigration',
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

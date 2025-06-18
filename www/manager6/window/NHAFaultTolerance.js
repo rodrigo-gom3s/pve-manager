@@ -44,7 +44,7 @@ Ext.define('PVE.window.NHAFaultTolerance', {
                         const selected = grid.getSelection();
                         const vms = selected !== null && selected !== undefined ? selected.map(vm => 'qemu/'+vm.data.vmid) : [];
                         Ext.Ajax.request({
-                            url: 'https://domain.tld:5000/rest/faulttolerance',
+                            url: 'https://pve-teste.duckdns.org:5000/rest/faulttolerance',
                             method: 'POST',
                             jsonData:  vms,
                             success: function(response) {
@@ -86,7 +86,7 @@ Ext.define('PVE.window.NHAFaultTolerance', {
                                 // response -> /cluster/resources
 
                                 Ext.Ajax.request({
-                                    url: 'https://domain.tld:5000/rest/faulttolerance',
+                                    url: 'https://pve-teste.duckdns.org:5000/rest/faulttolerance',
                                     method: 'GET',
                                     success: function(response3) {
                                         response2.result.data.forEach((element) => {

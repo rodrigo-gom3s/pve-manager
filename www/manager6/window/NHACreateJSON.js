@@ -102,7 +102,7 @@ Ext.define('PVE.window.NHAConfigJSON', {
                 },
                 {
                     xtype: 'combobox',
-                    fieldLabel: 'Network Interface',
+                    fieldLabel: 'Bridge Interface',
                     itemId: 'networkSelect',
                     store: Ext.create('Ext.data.Store', {
                         fields: ['iface']
@@ -147,7 +147,7 @@ Ext.define('PVE.window.NHAConfigJSON', {
                     Ext.Msg.alert('Error', 'All fields are required.');
                 }else{    
                     Ext.Ajax.request({
-                    url: 'https://domain.tld:5000/rest/remotemigration/createtoken',
+                    url: 'https://pve-teste.duckdns.org:5000/rest/remotemigration/createtoken',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
