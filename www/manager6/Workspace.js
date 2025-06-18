@@ -347,7 +347,7 @@ Ext.define('PVE.StdWorkspace', {
 				id: 'halmcontrol',
 				xtype: 'button',
 			    baseCls: 'x-btn',
-				text: gettext('HA LM Control'),
+				text: gettext('ProxmoxNG Control'),
 				margin: '3 5 0 0',
 			    style: {
 				// proxmox dark grey p light grey as border
