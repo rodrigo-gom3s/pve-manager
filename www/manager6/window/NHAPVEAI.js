@@ -28,7 +28,7 @@ Ext.define('PVE.window.NHAPVEAI', {
             xtype: 'textfield',
             itemId: 'userInput',
             enableKeyEvents: true,
-            emptyText: 'Escreve a tua pergunta...',
+            emptyText: 'Write here your question...',
             listeners: {
                 specialkey: function(field, e) {
                     if (e.getKey() === e.ENTER) {
