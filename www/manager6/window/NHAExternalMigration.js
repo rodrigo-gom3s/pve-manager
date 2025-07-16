@@ -204,7 +204,11 @@ Ext.define('PVE.window.NHAExternalMigration', {
             formBind: true,
             handler: function (btn) {
 
-                function processResult(){
+                function processResult(btn2){
+                    console.log(btn2);
+                    if(btn2 === 'no'){
+                        return;
+                    }
                     const win = btn.up('window');
                     const node = win.down('#nodeSelect').getValue();
                     const vmid = win.down('#vmSelect').getValue();
@@ -251,7 +255,7 @@ Ext.define('PVE.window.NHAExternalMigration', {
                 Ext.Msg.show({
                     title:'Do you want to proceed?',
                     msg: 'If you proceed, the VM will be migrated to the selected node and removed from this one.<br><br>Do you want to proceed?',
-                    buttons: Ext.Msg.YESNOCANCEL,
+                    buttons: Ext.Msg.YESNO,
                     fn: processResult,
                     animEl: 'elId',
                     icon: Ext.MessageBox.QUESTION
