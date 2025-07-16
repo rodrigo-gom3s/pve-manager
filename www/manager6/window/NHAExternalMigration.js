@@ -205,7 +205,6 @@ Ext.define('PVE.window.NHAExternalMigration', {
             handler: function (btn) {
 
                 function processResult(btn2){
-                    console.log(btn2);
                     if(btn2 === 'no'){
                         return;
                     }
