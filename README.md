@@ -36,8 +36,3 @@ Follow the installation guide included in the repository for step-by-step instru
 - Administrator access to the cluster  
 - Internet access to download and install the plugin  
 
----
-
-## 📜 License
-
-This project is licensed under the terms of the [MIT License](LICENSE).
