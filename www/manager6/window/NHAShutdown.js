@@ -55,7 +55,8 @@ Ext.define('PVE.window.NHAShutdown', {
                     let data = Ext.decode(response.responseText);
                     let checkbox = view.down('#migrateCheckbox');
                     checkbox.suspendEvents();
-                    checkbox.setValue(data.data.ha.shutdown_policy === "migrate");
+                    console.log(data);
+                    checkbox.setValue(data?.data?.ha?.shutdown_policy === "migrate");
                     checkbox.resumeEvents(false);
                 },
                 failure: function() {
